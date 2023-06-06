@@ -30,7 +30,12 @@ async function libraryInit() {
       const parseFile = await import('music-metadata').then((module) => module.parseFile);
       const metadata = await parseFile(filePath);
 
-      const { artist, title, album, genre, track, picture } = metadata.common;
+      let { artist, title, album, genre, track, picture } = metadata.common;
+
+      if (!Array.isArray(artist)) {
+        // 如果 `artist` 不是一个数组，则将其转换为一个包含一个字符串的数组
+        artist = [artist];
+      }
 
       const trackId = md5(artist.join('') + title + album).substring(0, 16);
       const trackNumber = track.no || 0;
@@ -66,6 +71,7 @@ async function libraryInit() {
 
     callback();
   };
+
 
   await new Promise((resolve) => {
     // 并发处理文件
