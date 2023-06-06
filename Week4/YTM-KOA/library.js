@@ -24,6 +24,10 @@ async function libraryInit() {
 
   // 处理单个文件
   const processFile = async (file, callback) => {
+    if (typeof callback !== 'function') {
+      callback = () => {}; // 默认回调函数为空函数
+    }
+
     const filePath = path.join(libraryPath, file);
     try {
       // 解析音乐文件的元数据
