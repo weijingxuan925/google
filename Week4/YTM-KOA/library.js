@@ -37,6 +37,12 @@ async function libraryInit() {
         artist = [artist];
       }
 
+      if (!artist || !title || !album) {
+        console.error(`Invalid metadata for file: ${file}`);
+        callback();
+        return;
+      }
+
       const trackId = md5(artist.join('') + title + album).substring(0, 16);
       const trackNumber = track.no || 0;
       const quality = 'STD';
