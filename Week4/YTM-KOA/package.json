@@ -2,25 +2,36 @@
   "name": "ytm-koa",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "library.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js"
+    "start": "node library.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/register": "^7.21.0",
     "async": "^3.2.4",
     "axios": "^1.4.0",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
+    "fs": "^0.0.1-security",
     "fs-extra": "^11.1.1",
+    "glob": "^10.2.6",
     "jpeg-js": "^0.4.4",
     "koa": "^2.14.2",
     "koa-jwt": "^4.0.4",
+    "md5": "^2.3.0",
+    "meta-data": "^1.0.0",
     "music-metadata": "^8.1.4",
-    "os": "^0.1.2"
+    "node-id3": "^0.2.6",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
+    "proper-lockfile": "^4.1.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.4"
   }
 }

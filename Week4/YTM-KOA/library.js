@@ -1,89 +1,139 @@
-import fs from 'fs';
-import path from 'path';
-import { promisify } from 'util';
-import { parseFile } from 'music-metadata';
-import { md5 } from 'crypto-js';
-import { encode } from 'jpeg-js';
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const glob = require('glob');
+const md5 = require('md5');
+const os = require('os');
+const async = require('async');
+const { encode } = require('jpeg-js');
+// const { parseFile } = require('music-metadata');
 
-const readdir = promisify(fs.readdir);
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
-
-const __filename = import.meta.url.substring(7);
-const __dirname = path.dirname(__filename);
 const libraryPath = path.join(__dirname, 'Library');
-const indexFilePath = path.join(libraryPath, 'index.json');
 const coverPath = path.join(libraryPath, 'cover');
+const indexPath = path.join(libraryPath, 'index.json');
+const cpuCount = os.cpus().length;
 
+// 初始化音乐库
 async function libraryInit() {
-  try {
-    // Read the files in the Library directory
-    const files = await readdir(libraryPath);
+  // 获取音乐文件列表
+  const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+  const index = [];
+  const albumCovers = {};
 
-    // Filter out only the MP3 files
-    const mp3Files = files.filter(file => path.extname(file).toLowerCase() === '.mp3');
+  await fs.promises.mkdir(coverPath, { recursive: true });
 
-    // Create the cover directory if it doesn't exist
-    if (!fs.existsSync(coverPath)) {
-      fs.mkdirSync(coverPath);
-    }
-
-    // Create an array to store the metadata objects
-    const metadataList = [];
-
-    // Process each MP3 file
-    await Promise.all(mp3Files.map(async file => {
-      const filePath = path.join(libraryPath, file);
-
-      // Read the ID3 tags using music-metadata library
+  // 处理单个文件
+  const processFile = async (file, callback) => {
+    const filePath = path.join(libraryPath, file);
+    try {
+      // 解析音乐文件的元数据
+      const parseFile = await import('music-metadata').then((module) => module.parseFile);
       const metadata = await parseFile(filePath);
 
-      // Generate the track ID
-      const { artist, title, album } = metadata.common;
-      const trackId = md5(`${artist}${title}${album}`).toString().substring(0, 16);
+      const { artist, title, album, genre, track, picture } = metadata.common;
 
-      // Extract the necessary information
-      const { albumartist, title: songTitle, album: albumTitle, genre, year, track, duration } = metadata.common;
-      const artistList = Array.isArray(albumartist) ? albumartist : [albumartist];
-      const trackNumber = track.no ? parseInt(track.no, 10) : 0;
-
-      // Save the cover image if it exists
-      if (metadata.common.picture && metadata.common.picture.length > 0) {
-        const coverImage = metadata.common.picture[0];
-        const albumId = md5(albumTitle).toString();
-        const coverFilePath = path.join(coverPath, `${albumId}.jpg`);
-        const coverBuffer = coverImage.format === 'image/jpeg' ? coverImage.data : encode({ data: coverImage.data, width: coverImage.width, height: coverImage.height }, 100).data;
-        fs.writeFileSync(coverFilePath, coverBuffer);
-      }
-
-      // Create the metadata object
-      const metadataObj = {
+      const trackId = md5(artist.join('') + title + album).substring(0, 16);
+      const trackNumber = track.no || 0;
+      const quality = 'STD';
+      const fileData = {
         track_id: trackId,
-        title: songTitle,
-        artist: artistList,
-        album: albumTitle,
-        album_id: md5(albumTitle).toString(),
-        genre,
-        length: duration,
+        title,
+        artist,
+        album,
+        album_id: md5(album),
+        genre: genre ? genre[0] : '',
+        length: metadata.format.duration,
         track_number: trackNumber,
-        quality: 'STD',
-        file: filePath
+        quality,
+        file: file,
       };
 
-      metadataList.push(metadataObj);
+      // 保存专辑封面图像
+      if (picture && picture.length > 0) {
+        const albumCoverPath = path.join(coverPath, `${fileData.album_id}.jpg`);
+        const imageData = picture[0].data;
+        const imageBuffer = Buffer.from(imageData);
+        await fs.promises.writeFile(albumCoverPath, encode({ data: imageBuffer, width: 0, height: 0 }, 100).data);
+      }
 
-      console.log(`Index Created: ${trackId} ${filePath}`);
-    }));
+      // 将文件数据添加到索引数组
+      index.push(JSON.stringify(fileData));
+      console.log(`Index Created: ${trackId} ${file}`);
+    } catch (error) {
+      console.error(`Error processing file: ${file}`);
+      console.error(error);
+    }
 
-    // Write the metadata objects to index.json
-    const indexFileData = metadataList.map(metadataObj => JSON.stringify(metadataObj)).join('\n');
-    await writeFile(indexFilePath, indexFileData);
+    callback();
+  };
 
-    console.log('Library initialization completed.');
+  await new Promise((resolve) => {
+    // 并发处理文件
+    async.eachLimit(files, cpuCount, processFile, () => {
+      resolve();
+    });
+  });
 
+  // 将索引数据写入文件
+  await fs.promises.writeFile(indexPath, index.join('\n'));
+}
+
+// 加载音乐库索引
+async function libraryLoad() {
+  try {
+    const data = await fs.promises.readFile(indexPath, 'utf-8');
+    const lines = data.split('\n');
+    return lines.map((line) => JSON.parse(line));
   } catch (error) {
-    console.error('An error occurred during library initialization:', error);
+    console.error('Error loading library index');
+    console.error(error);
+    return [];
   }
 }
 
-libraryInit();
+// 更新音乐库
+async function libraryUpdate(lib) {
+  const existingFiles = lib.map((item) => item.file);
+  const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+
+  const removeItems = lib.filter((item) => !existingFiles.includes(item.file));
+  const newFiles = files.filter((file) => !existingFiles.includes(file));
+
+  if (removeItems.length > 0) {
+    console.log('Removing items:');
+    console.log(removeItems);
+    const newLib = lib.filter((item) => !removeItems.includes(item));
+    await fs.promises.writeFile(indexPath, newLib.map((item) => JSON.stringify(item)).join('\n'));
+  }
+
+  if (newFiles.length > 0) {
+    console.log('Adding new files:');
+    console.log(newFiles);
+    await libraryInit();
+  }
+}
+
+// 启动应用程序
+async function start() {
+  try {
+    const indexExists = await fs.promises.access(indexPath).then(() => true).catch(() => false);
+
+    if (indexExists) {
+      // 加载已有的音乐库索引
+      const lib = await libraryLoad();
+      // 更新音乐库
+      await libraryUpdate(lib);
+    } else {
+      // 初始化音乐库
+      await libraryInit();
+    }
+
+    // 在此处启动你的应用程序
+
+  } catch (error) {
+    console.error('Error starting the app');
+    console.error(error);
+  }
+}
+
+start().then(() => console.log('Done'));

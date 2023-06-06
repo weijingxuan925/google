@@ -216,6 +216,260 @@ Index Created: <track_id> <file>
 
 `libraryLoad(filePath)`和`libraryUpdate(path)`应该占用文件直到运行过程结束，然后释放控制。所以现在逻辑非常清晰：在'npm start'启动项目后，首先尝试'libraryLoad(filePath)'，如果文件不存在，则运行'libraryInit(path)'。如果文件存在，则挂载`.then((lib) => { libraryUpdate(lib, filePath) })`来完成索引库的加载和刷新。
 
+```bash
+npm install music-metadata md5 fs path os jpeg-js async glob crypto
+```
+
+Library.js
+
+```js
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+const glob = require('glob');
+const md5 = require('md5');
+const os = require('os');
+const async = require('async');
+const { encode } = require('jpeg-js');
+const { parseFile } = require('music-metadata');
+const libraryPath = path.join(__dirname, 'Library');
+const coverPath = path.join(libraryPath, 'cover');
+const indexPath = path.join(libraryPath, 'index.json');
+const cpuCount = os.cpus().length;
+
+// 初始化音乐库
+async function libraryInit() {
+  // 获取音乐文件列表
+  const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+  const index = [];
+  const albumCovers = {};
+
+  await fs.promises.mkdir(coverPath, { recursive: true });
+
+  // 处理单个文件
+  const processFile = async (file, callback) => {
+    const filePath = path.join(libraryPath, file);
+    try {
+      // 解析音乐文件的元数据
+      const metadata = await parseFile(filePath);
+
+      const { artist, title, album, genre, track, picture } = metadata.common;
+
+      const trackId = md5(artist.join('') + title + album).substring(0, 16);
+      const trackNumber = track.no || 0;
+      const quality = 'STD';
+      const fileData = {
+        track_id: trackId,
+        title,
+        artist,
+        album,
+        album_id: md5(album),
+        genre: genre ? genre[0] : '',
+        length: metadata.format.duration,
+        track_number: trackNumber,
+        quality,
+        file: file,
+      };
+
+      // 保存专辑封面图像
+      if (picture && picture.length > 0) {
+        const albumCoverPath = path.join(coverPath, `${fileData.album_id}.jpg`);
+        const imageData = picture[0].data;
+        const imageBuffer = Buffer.from(imageData);
+        await fs.promises.writeFile(albumCoverPath, encode({ data: imageBuffer, width: 0, height: 0 }, 100).data);
+      }
+
+      // 将文件数据添加到索引数组
+      index.push(JSON.stringify(fileData));
+      console.log(`Index Created: ${trackId} ${file}`);
+    } catch (error) {
+      console.error(`Error processing file: ${file}`);
+      console.error(error);
+    }
+
+    callback();
+  };
+
+  await new Promise((resolve) => {
+    // 并发处理文件
+    async.eachLimit(files, cpuCount, processFile, () => {
+      resolve();
+    });
+  });
+
+  // 将索引数据写入文件
+  await fs.promises.writeFile(indexPath, index.join('\n'));
+}
+
+// 加载音乐库索引
+async function libraryLoad() {
+  try {
+    const data = await fs.promises.readFile(indexPath, 'utf-8');
+    const lines = data.split('\n');
+    return lines.map((line) => JSON.parse(line));
+  } catch (error) {
+    console.error('Error loading library index');
+    console.error(error);
+    return [];
+  }
+}
+
+// 更新音乐库
+async function libraryUpdate(lib) {
+  const existingFiles = lib.map((item) => item.file);
+  const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+
+  const removeItems = lib.filter((item) => !existingFiles.includes(item.file));
+  const newFiles = files.filter((file) => !existingFiles.includes(file));
+
+  if (removeItems.length > 0) {
+    console.log('Removing items:');
+    console.log(removeItems);
+    const newLib = lib.filter((item) => !removeItems.includes(item));
+    await fs.promises.writeFile(indexPath, newLib.map((item) => JSON.stringify(item)).join('\n'));
+  }
+
+  if (newFiles.length > 0) {
+    console.log('Adding new files:');
+    console.log(newFiles);
+    await libraryInit();
+  }
+}
+
+// 启动应用程序
+async function start() {
+  try {
+    const indexExists = await fs.promises.access(indexPath).then(() => true).catch(() => false);
+
+    if (indexExists) {
+      // 加载已有的音乐库索引
+      const lib = await libraryLoad();
+      // 更新音乐库
+      await libraryUpdate(lib);
+    } else {
+      // 初始化音乐库
+      await libraryInit();
+    }
+
+    // 在此处启动你的应用程序
+  } catch (error) {
+    console.error('Error starting the app');
+    console.error(error);
+  }
+}
+
+start().then(() => console.log('Done'));
+
+```
+
+报错：
+
+```bash
+jingxuanwei@sMacBookPro YTM-KOA % npm start
+
+> ytm-koa@1.0.0 start
+> node library.js
+
+Error loading library index
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:82:37
+    at Array.map (<anonymous>)
+    at libraryLoad (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:82:18)
+    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:116:19)
+Adding new files:
+[ '4.mp3', '3.mp3', '2.mp3', '1.mp3' ]
+Error processing file: 4.mp3
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
+Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
+    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
+    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
+    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
+    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
+    at new Promise (<anonymous>)
+    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
+    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
+    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
+  code: 'ERR_REQUIRE_ESM'
+}
+Error processing file: 3.mp3
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
+Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
+    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
+    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
+    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
+    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
+    at new Promise (<anonymous>)
+    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
+    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
+    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
+  code: 'ERR_REQUIRE_ESM'
+}
+Error processing file: 2.mp3
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
+Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
+    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
+    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
+    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
+    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
+    at new Promise (<anonymous>)
+    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
+    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
+    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
+  code: 'ERR_REQUIRE_ESM'
+}
+Error processing file: 1.mp3
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
+Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
+    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
+    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
+    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
+    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
+    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
+    at new Promise (<anonymous>)
+    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
+    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
+    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
+  code: 'ERR_REQUIRE_ESM'
+}
+Done
+jingxuanwei@sMacBookPro YTM-KOA % npm start
+
+> ytm-koa@1.0.0 start
+> node library.js
+
+/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:9
+const { parseFile } = require('music-metadata');
+                      ^
+
+Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
+Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
+    at Object.<anonymous> (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:9:23) {
+  code: 'ERR_REQUIRE_ESM'
+}
+
+Node.js v18.16.0
+jingxuanwei@sMacBookPro YTM-KOA % 
+
+```
+
+![image-20230606231753481](Week4.assets/image-20230606231753481.png)
+
 ### "云端"上的数据
 
 在这个项目中，我们使用非关系型数据库mongoDB构建整个系统的数据库系统。
