@@ -3,13 +3,10 @@ const path = require('path');
 const glob = require('glob');
 const md5 = require('md5');
 const os = require('os');
-const async = require('async');
 const mongoose = require('mongoose');
-
 const libraryPath = path.join(__dirname, 'Library');
 const coverPath = path.join(libraryPath, 'cover');
-const indexPath = path.join(libraryPath, 'index.json');
-const cpuCount = os.cpus().length;
+
 
 // 链接数据库
 const connectionString = 'mongodb://localhost:27017/YTM';
