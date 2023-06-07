@@ -231,7 +231,7 @@ const md5 = require('md5');
 const os = require('os');
 const async = require('async');
 const { encode } = require('jpeg-js');
-const { parseFile } = require('music-metadata');
+
 const libraryPath = path.join(__dirname, 'Library');
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
@@ -248,12 +248,28 @@ async function libraryInit() {
 
   // 处理单个文件
   const processFile = async (file, callback) => {
+    if (typeof callback !== 'function') {
+      callback = () => {}; // 默认回调函数为空函数
+    }
+
     const filePath = path.join(libraryPath, file);
     try {
       // 解析音乐文件的元数据
+      const parseFile = await import('music-metadata').then((module) => module.parseFile);
       const metadata = await parseFile(filePath);
 
-      const { artist, title, album, genre, track, picture } = metadata.common;
+      let { artist, title, album, genre, track, picture } = metadata.common;
+
+      if (!Array.isArray(artist)) {
+        // 如果 `artist` 不是一个数组，则将其转换为一个包含一个字符串的数组
+        artist = [artist];
+      }
+
+      if (!artist || !title || !album) {
+        console.error(`Invalid metadata for file: ${file}`);
+        callback();
+        return;
+      }
 
       const trackId = md5(artist.join('') + title + album).substring(0, 16);
       const trackNumber = track.no || 0;
@@ -280,7 +296,7 @@ async function libraryInit() {
       }
 
       // 将文件数据添加到索引数组
-      index.push(JSON.stringify(fileData));
+      index.push(JSON.stringify(fileData, null, 2));
       console.log(`Index Created: ${trackId} ${file}`);
     } catch (error) {
       console.error(`Error processing file: ${file}`);
@@ -290,6 +306,7 @@ async function libraryInit() {
     callback();
   };
 
+
   await new Promise((resolve) => {
     // 并发处理文件
     async.eachLimit(files, cpuCount, processFile, () => {
@@ -298,7 +315,7 @@ async function libraryInit() {
   });
 
   // 将索引数据写入文件
-  await fs.promises.writeFile(indexPath, index.join('\n'));
+  await fs.promises.writeFile(indexPath, JSON.stringify(index));
 }
 
 // 加载音乐库索引
@@ -306,13 +323,14 @@ async function libraryLoad() {
   try {
     const data = await fs.promises.readFile(indexPath, 'utf-8');
     const lines = data.split('\n');
-    return lines.map((line) => JSON.parse(line));
+    return lines.map(line => JSON.parse(line));
   } catch (error) {
     console.error('Error loading library index');
     console.error(error);
     return [];
   }
 }
+
 
 // 更新音乐库
 async function libraryUpdate(lib) {
@@ -351,7 +369,6 @@ async function start() {
       await libraryInit();
     }
 
-    // 在此处启动你的应用程序
   } catch (error) {
     console.error('Error starting the app');
     console.error(error);
