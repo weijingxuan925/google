@@ -7,7 +7,6 @@ const os = require('os');
 const async = require('async');
 const { encode } = require('jpeg-js');
 const mongoose = require('mongoose');
-//const { parseFile } = require('music-metadata');
 
 const libraryPath = path.join(__dirname, 'Library');
 const coverPath = path.join(libraryPath, 'cover');
