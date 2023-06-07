@@ -146,7 +146,7 @@ async function libraryInit() {
   });
 
   // 将索引数据写入文件
-  await fs.promises.writeFile(indexPath, index.join('\n'));
+  await fs.promises.writeFile(indexPath, JSON.stringify(index));
 }
 
 // 加载音乐库索引
@@ -154,13 +154,14 @@ async function libraryLoad() {
   try {
     const data = await fs.promises.readFile(indexPath, 'utf-8');
     const lines = data.split('\n');
-    return lines.map((line) => JSON.parse(line));
+    return lines.map(line => JSON.parse(line));
   } catch (error) {
     console.error('Error loading library index');
     console.error(error);
     return [];
   }
 }
+
 
 // 更新音乐库
 async function libraryUpdate(lib) {

@@ -1,14 +1,1 @@
-{
-  "track_id": "d449ffe9167c1827",
-  "title": "反方向的钟",
-  "artist": [
-    "周杰伦"
-  ],
-  "album": "Jay",
-  "album_id": "4d0fef3280b8c1356077de7363a8b893",
-  "genre": "Blues",
-  "length": 258.1420408163265,
-  "track_number": 0,
-  "quality": "STD",
-  "file": "4.mp3"
-}
+{"track_id":"d449ffe9167c1827","title":"反方向的钟","artist":["周杰伦"],"album":"Jay","album_id":"4d0fef3280b8c1356077de7363a8b893","genre":"Blues","length":258.1420408163265,"track_number":0,"quality":"STD","file":"4.mp3"}
