@@ -6,67 +6,11 @@ const md5 = require('md5');
 const os = require('os');
 const async = require('async');
 const { encode } = require('jpeg-js');
-const mongoose = require('mongoose');
 
 const libraryPath = path.join(__dirname, 'Library');
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
 const cpuCount = os.cpus().length;
-
-// 链接数据库
-const connectionString = 'mongodb://localhost:27017/YTM';
-// 使用mongoose连接数据库
-mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// 创建音乐库集合模型
-const librarySchema = new mongoose.Schema({
-  type: String,
-  id: String,
-  added_date: Date,
-});
-
-const Library = mongoose.model('library', librarySchema);
-
-// 创建用户集合模型
-const userSchema = new mongoose.Schema({
-  uid: String,
-  name: String,
-  secret: String,
-  subscribe: String,
-  subscribe_expired: Date,
-  last_login: Date,
-  playing: String,
-});
-
-const User = mongoose.model('users', userSchema);
-
-
-
-// 创建播放列表模型
-const playlistSchema = new mongoose.Schema({
-  pid: String,
-  author: String,
-  name: String,
-  description: String,
-  added: Number,
-  liked: Number,
-  shared: Number,
-  played: Number,
-  public: Boolean,
-  image: String,
-  type: String,
-  last_update: Date,
-});
-
-const Playlist = mongoose.model('Playlist', playlistSchema);
-
-
-const playlistItemSchema = new mongoose.Schema({
-  tid: String,
-  order: Number,
-});
-
-const PlaylistItem = mongoose.model('<pid>', playlistItemSchema);
 
 // 初始化音乐库
 async function libraryInit() {
@@ -199,10 +143,6 @@ async function start() {
       // 初始化音乐库
       await libraryInit();
     }
-
-    // 在此处启动你的应用程序
-    // 关闭与 MongoDB 的连接
-    await mongoose.connection.close();
 
   } catch (error) {
     console.error('Error starting the app');
