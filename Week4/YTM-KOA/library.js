@@ -18,21 +18,29 @@ const connectionString = 'mongodb://localhost:27017/YTM';
 // 使用mongoose连接数据库
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// 创建音乐库模型
+// 创建音乐库集合模型
 const librarySchema = new mongoose.Schema({
-  track_id: String,
-  title: String,
-  artist: [String],
-  album: String,
-  album_id: String,
-  genre: String,
-  length: Number,
-  track_number: Number,
-  quality: String,
-  file: String,
+  type: String,
+  id: String,
+  added_date: Date,
 });
 
-const Library = mongoose.model('Library', librarySchema);
+const Library = mongoose.model('library', librarySchema);
+
+// 创建用户集合模型
+const userSchema = new mongoose.Schema({
+  uid: String,
+  name: String,
+  secret: String,
+  subscribe: String,
+  subscribe_expired: Date,
+  last_login: Date,
+  playing: String,
+});
+
+const User = mongoose.model('users', userSchema);
+
+
 
 // 创建播放列表模型
 const playlistSchema = new mongoose.Schema({
@@ -51,6 +59,14 @@ const playlistSchema = new mongoose.Schema({
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema);
+
+
+const playlistItemSchema = new mongoose.Schema({
+  tid: String,
+  order: Number,
+});
+
+const PlaylistItem = mongoose.model('<pid>', playlistItemSchema);
 
 // 初始化音乐库
 async function libraryInit() {
