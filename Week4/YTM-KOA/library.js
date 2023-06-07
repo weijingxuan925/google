@@ -6,12 +6,52 @@ const md5 = require('md5');
 const os = require('os');
 const async = require('async');
 const { encode } = require('jpeg-js');
-// const { parseFile } = require('music-metadata');
+const mongoose = require('mongoose');
+//const { parseFile } = require('music-metadata');
 
 const libraryPath = path.join(__dirname, 'Library');
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
 const cpuCount = os.cpus().length;
+
+// 链接数据库
+const connectionString = 'mongodb://localhost:27017/YTM';
+// 使用mongoose连接数据库
+mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// 创建音乐库模型
+const librarySchema = new mongoose.Schema({
+  track_id: String,
+  title: String,
+  artist: [String],
+  album: String,
+  album_id: String,
+  genre: String,
+  length: Number,
+  track_number: Number,
+  quality: String,
+  file: String,
+});
+
+const Library = mongoose.model('Library', librarySchema);
+
+// 创建播放列表模型
+const playlistSchema = new mongoose.Schema({
+  pid: String,
+  author: String,
+  name: String,
+  description: String,
+  added: Number,
+  liked: Number,
+  shared: Number,
+  played: Number,
+  public: Boolean,
+  image: String,
+  type: String,
+  last_update: Date,
+});
+
+const Playlist = mongoose.model('Playlist', playlistSchema);
 
 // 初始化音乐库
 async function libraryInit() {
@@ -72,7 +112,7 @@ async function libraryInit() {
       }
 
       // 将文件数据添加到索引数组
-      index.push(JSON.stringify(fileData));
+      index.push(JSON.stringify(fileData, null, 2));
       console.log(`Index Created: ${trackId} ${file}`);
     } catch (error) {
       console.error(`Error processing file: ${file}`);
@@ -145,6 +185,8 @@ async function start() {
     }
 
     // 在此处启动你的应用程序
+    // 关闭与 MongoDB 的连接
+    await mongoose.connection.close();
 
   } catch (error) {
     console.error('Error starting the app');

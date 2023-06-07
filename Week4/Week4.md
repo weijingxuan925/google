@@ -362,121 +362,289 @@ start().then(() => console.log('Done'));
 
 ```
 
-报错：
-
-```bash
-jingxuanwei@sMacBookPro YTM-KOA % npm start
-
-> ytm-koa@1.0.0 start
-> node library.js
-
-Error loading library index
-SyntaxError: Unexpected end of JSON input
-    at JSON.parse (<anonymous>)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:82:37
-    at Array.map (<anonymous>)
-    at libraryLoad (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:82:18)
-    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:116:19)
-Adding new files:
-[ '4.mp3', '3.mp3', '2.mp3', '1.mp3' ]
-Error processing file: 4.mp3
-Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
-Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
-    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
-    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
-    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
-    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
-    at new Promise (<anonymous>)
-    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
-    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
-    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
-  code: 'ERR_REQUIRE_ESM'
-}
-Error processing file: 3.mp3
-Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
-Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
-    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
-    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
-    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
-    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
-    at new Promise (<anonymous>)
-    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
-    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
-    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
-  code: 'ERR_REQUIRE_ESM'
-}
-Error processing file: 2.mp3
-Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
-Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
-    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
-    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
-    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
-    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
-    at new Promise (<anonymous>)
-    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
-    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
-    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
-  code: 'ERR_REQUIRE_ESM'
-}
-Error processing file: 1.mp3
-Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
-Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
-    at processFile (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:30:45)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:151:38
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2588:44
-    at replenish (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:446:21)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:451:13
-    at Object.eachLimit$1 (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:2718:34)
-    at Object.awaitable (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/async/dist/async.js:211:32)
-    at /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:70:11
-    at new Promise (<anonymous>)
-    at libraryInit (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:69:9)
-    at async libraryUpdate (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:107:5)
-    at async start (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:117:7) {
-  code: 'ERR_REQUIRE_ESM'
-}
-Done
-jingxuanwei@sMacBookPro YTM-KOA % npm start
-
-> ytm-koa@1.0.0 start
-> node library.js
-
-/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:9
-const { parseFile } = require('music-metadata');
-                      ^
-
-Error [ERR_REQUIRE_ESM]: require() of ES Module /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/node_modules/music-metadata/lib/index.js from /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js not supported.
-Instead change the require of index.js in /Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js to a dynamic import() which is available in all CommonJS modules.
-    at Object.<anonymous> (/Users/jingxuanwei/Desktop/google/Week4/YTM-KOA/library.js:9:23) {
-  code: 'ERR_REQUIRE_ESM'
-}
-
-Node.js v18.16.0
-jingxuanwei@sMacBookPro YTM-KOA % 
-
-```
-
-![image-20230606231753481](Week4.assets/image-20230606231753481.png)
+![image-20230606233101536](Week4.assets/image-20230606233101536.png)
 
 ### "云端"上的数据
+
+### 
 
 在这个项目中，我们使用非关系型数据库mongoDB构建整个系统的数据库系统。
 
 mongo的基本概念和介绍：
 
 https://www.runoob.com/mongodb/mongodb-intro.html
+
+#### 什么是MongoDB ?
+
+MongoDB 是由C++语言编写的，是一个基于分布式文件存储的开源数据库系统。
+
+在高负载的情况下，添加更多的节点，可以保证服务器性能。
+
+MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+
+MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
+
+![img](https://www.runoob.com/wp-content/uploads/2013/10/crud-annotated-document.png)
+
+------
+
+##### 主要特点
+
+- MongoDB 是一个面向文档存储的数据库，操作起来比较简单和容易。
+- 你可以在MongoDB记录中设置任何属性的索引 (如：FirstName="Sameer",Address="8 Gandhi Road")来实现更快的排序。
+- 你可以通过本地或者网络创建数据镜像，这使得MongoDB有更强的扩展性。
+- 如果负载的增加（需要更多的存储空间和更强的处理能力） ，它可以分布在计算机网络中的其他节点上这就是所谓的分片。
+- Mongo支持丰富的查询表达式。查询指令使用JSON形式的标记，可轻易查询文档中内嵌的对象及数组。
+- MongoDb 使用update()命令可以实现替换完成的文档（数据）或者一些指定的数据字段 。
+- Mongodb中的Map/reduce主要是用来对数据进行批量处理和聚合操作。
+- Map和Reduce。Map函数调用emit(key,value)遍历集合中所有的记录，将key与value传给Reduce函数进行处理。
+- Map函数和Reduce函数是使用Javascript编写的，并可以通过db.runCommand或mapreduce命令来执行MapReduce操作。
+- GridFS是MongoDB中的一个内置功能，可以用于存放大量小文件。
+- MongoDB允许在服务端执行脚本，可以用Javascript编写某个函数，直接在服务端执行，也可以把函数的定义存储在服务端，下次直接调用即可。
+- MongoDB支持各种编程语言:RUBY，PYTHON，JAVA，C++，PHP，C#等多种语言。
+- MongoDB安装简单。
+
+------
+
+##### 历史
+
+- 2007年10月，MongoDB由10gen团队所发展。2009年2月首度推出。
+- 2012年05月23日，MongoDB2.1 开发分支发布了! 该版本采用全新架构，包含诸多增强。
+- 2012年06月06日，MongoDB 2.0.6 发布，分布式文档数据库。
+- 2013年04月23日，MongoDB 2.4.3 发布，此版本包括了一些性能优化，功能增强以及bug修复。
+- 2013年08月20日，MongoDB 2.4.6 发布。
+- 2013年11月01日，MongoDB 2.4.8 发布。
+- ……
+
+------
+
+##### MongoDB 下载
+
+你可以在mongodb官网下载该安装包，地址为：https://www.mongodb.com/download-center#community。MonggoDB支持以下平台:
+
+- OS X 32-bit
+- OS X 64-bit
+- Linux 32-bit
+- Linux 64-bit
+- Windows 32-bit
+- Windows 64-bit
+- Solaris i86pc
+- Solaris 64
+
+------
+
+##### 语言支持
+
+MongoDB有官方的驱动如下：
+
+- [C](http://github.com/mongodb/mongo-c-driver)
+- [C++](http://github.com/mongodb/mongo)
+- [C# / .NET](http://www.mongodb.org/display/DOCS/CSharp+Language+Center)
+- [Erlang](https://github.com/TonyGen/mongodb-erlang)
+- [Haskell](http://hackage.haskell.org/package/mongoDB)
+- [Java](http://github.com/mongodb/mongo-java-driver)
+- [JavaScript](http://www.mongodb.org/display/DOCS/Javascript+Language+Center)
+- [Lisp](https://github.com/fons/cl-mongo)
+- [node.JS](http://github.com/mongodb/node-mongodb-native)
+- [Perl](http://github.com/mongodb/mongo-perl-driver)
+- [PHP](http://github.com/mongodb/mongo-php-driver)
+- [Python](http://github.com/mongodb/mongo-python-driver)
+- [Ruby](http://github.com/mongodb/mongo-ruby-driver)
+- [Scala](https://github.com/mongodb/casbah)
+- [Go](https://github.com/mongodb/mongo-go-driver)
+
+------
+
+##### MongoDB 工具
+
+有几种可用于MongoDB的管理工具。
+
+###### 监控
+
+MongoDB提供了网络和系统监控工具Munin，它作为一个插件应用于MongoDB中。
+
+Gangila是MongoDB高性能的系统监视的工具，它作为一个插件应用于MongoDB中。
+
+基于图形界面的开源工具 Cacti, 用于查看CPU负载, 网络带宽利用率,它也提供了一个应用于监控 MongoDB 的插件。
+
+###### GUI
+
+- Fang of Mongo – 网页式,由Django和jQuery所构成。
+- Futon4Mongo – 一个CouchDB Futon web的mongodb山寨版。
+- Mongo3 – Ruby写成。
+- MongoHub – 适用于OSX的应用程序。
+- Opricot – 一个基于浏览器的MongoDB控制台, 由PHP撰写而成。
+- Database Master — Windows的mongodb管理工具
+- RockMongo — 最好的PHP语言的MongoDB管理工具，轻量级, 支持多国语言.
+
+------
+
+##### MongoDB 应用案例
+
+下面列举一些公司MongoDB的实际应用：
+
+- Craiglist上使用MongoDB的存档数十亿条记录。
+- FourSquare，基于位置的社交网站，在Amazon EC2的服务器上使用MongoDB分享数据。
+- Shutterfly，以互联网为基础的社会和个人出版服务，使用MongoDB的各种持久性数据存储的要求。
+- bit.ly, 一个基于Web的网址缩短服务，使用MongoDB的存储自己的数据。
+- spike.com，一个MTV网络的联营公司， spike.com使用MongoDB的。
+- Intuit公司，一个为小企业和个人的软件和服务提供商，为小型企业使用MongoDB的跟踪用户的数据。
+- sourceforge.net，资源网站查找，创建和发布开源软件免费，使用MongoDB的后端存储。
+- etsy.com ，一个购买和出售手工制作物品网站，使用MongoDB。
+- 纽约时报，领先的在线新闻门户网站之一，使用MongoDB。
+- CERN，著名的粒子物理研究所，欧洲核子研究中心大型强子对撞机的数据使用MongoDB。
+
+安装mongoDB
+
+#### Mac OSX 平台安装 MongoDB
+
+###### 包安装
+
+MongoDB 提供了 OSX 平台上 64 位的安装包，你可以在官网下载安装包。
+
+下载地址：https://www.mongodb.com/try/download/community
+
+![img](https://www.runoob.com/wp-content/uploads/2017/03/F1642F2B-A395-41BD-A66D-A1446BAD2324.jpg)
+
+
+
+> 从 MongoDB 3.0 版本开始只支持 OS X 10.7 (Lion) 版本及更新版本的系统。
+
+
+
+接下来我们使用 curl 命令来下载安装：
+
+```bash
+# 进入 /usr/local
+cd /usr/local
+
+# 下载
+sudo curl -O https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.9.tgz
+
+# 解压
+sudo tar -zxvf mongodb-osx-ssl-x86_64-4.0.9.tgz
+
+# 重命名为 mongodb 目录
+
+sudo mv mongodb-osx-x86_64-4.0.9/ mongodb
+```
+
+安装完成后，我们可以把 MongoDB 的二进制命令文件目录（安装目录/bin）添加到 PATH 路径中：
+
+```bash
+export PATH=/usr/local/mongodb/bin:$PATH
+```
+
+创建日志及数据存放的目录：
+
+- 数据存放路径：
+
+  ```bash
+  sudo mkdir -p /usr/local/var/mongodb
+  ```
+
+- 日志文件路径：
+
+  ```bash
+  sudo mkdir -p /usr/local/var/log/mongodb
+  ```
+
+接下来要确保当前用户对以上两个目录有读写的权限：
+
+```bash
+sudo chown jingxuanwei /usr/local/var/mongodb
+sudo chown jingxuanwei /usr/local/var/log/mongodb
+```
+
+以上 **runoob** 是我电脑上的用户，你这边需要根据你当前对用户名来修改。
+
+接下来我们使用以下命令在后台启动 mongodb：
+
+```bash
+mongod --dbpath /usr/local/var/mongodb --logpath /usr/local/var/log/mongodb/mongo.log --fork
+```
+
+- **--dbpath** 设置数据存放目录
+- **--logpath** 设置日志存放目录
+- **--fork** 在后台运行
+
+如果不想在后端运行，而是在控制台上查看运行过程可以直接设置配置文件启动：
+
+```bash
+mongod --config /usr/local/etc/mongod.conf
+```
+
+查看 mongod 服务是否启动：
+
+```bash
+ps aux | grep -v grep | grep mongod
+```
+
+使用以上命令如果看到有 mongod 的记录表示运行成功。
+
+启动后我们可以使用 **mongo** 命令打开一个终端：
+
+```bash
+$ cd /usr/local/mongodb/bin 
+$ ./mongo
+MongoDB shell version v4.0.9
+connecting to: mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb
+Implicit session: session { "id" : UUID("3c12bf4f-695c-48b2-b160-8420110ccdcf") }
+MongoDB server version: 4.0.9
+……
+> 1 + 1
+2
+> 
+```
+
+###### 使用 brew 安装
+
+此外你还可以使用 OSX 的 brew 来安装 mongodb：
+
+```
+brew tap mongodb/brew
+brew install mongodb-community@4.4
+```
+
+**@** 符号后面的 **4.4** 是最新版本号。
+
+安装信息：
+
+- 配置文件：**/usr/local/etc/mongod.conf**
+- 日志文件路径：**/usr/local/var/log/mongodb**
+- 数据存放路径：**/usr/local/var/mongodb**
+
+#### 运行 MongoDB
+
+我们可以使用 brew 命令或 mongod 命令来启动服务。
+
+brew 启动：
+
+```bash
+brew services start mongodb-community@4.4
+```
+
+brew 停止：
+
+```bash
+brew services stop mongodb-community@4.4
+```
+
+mongod 命令后台进程方式：
+
+```bash
+mongod --config /usr/local/etc/mongod.conf --fork
+```
+
+这种方式启动要关闭可以进入 mongo shell 控制台来实现：
+
+```bash
+> db.adminCommand({ "shutdown" : 1 })
+```
+
+
+
+#### 任务介绍
 
 在Node中，我们使用mongoose库处理Node与MongoDB的交互。实际上，Node本身集成了对MongoDB.js的原生支持，但是mongoose中间件更容易使用。Mongoose中文手册：
 
