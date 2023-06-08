@@ -299,6 +299,53 @@ stats.isFile()`判断获取的对象是否为常规文件，是则返回`true
 
 ![image-20230608161647585](Week5.assets/image-20230608161647585.png)
 
+![image-20230609013313291](Week5.assets/image-20230609013313291.png)
+
+![image-20230609013323799](Week5.assets/image-20230609013323799.png)
+
+```js
+const Koa = require('koa');
+const send = require('koa-send');
+const {join} = require("path");
+const app = new Koa();
+
+// 定义音频文件的存储路径
+const audioFilePath = './Library';
+
+// 处理音频文件请求
+app.use(async (ctx, next) => {
+    // 检查请求是否以 /stream/ 开头
+    if (ctx.path.startsWith('/stream/')) {
+        // 获取音频文件名
+        const filename = ctx.path.slice('/stream/'.length);
+        const filePath = `${audioFilePath}/${filename}`;
+
+        try {
+            // 使用 koa-send 将文件作为流发送给客户端
+            await send(ctx, filePath);
+        } catch (error) {
+            // 捕获并忽略 EPIPE 错误
+            if (error.code !== 'EPIPE') {
+                console.error(`Error sending file: ${filePath}`, error);
+            }
+        }
+    } else {
+        // 继续下一个中间件
+        await next();
+    }
+});
+
+// 启动服务器
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+    console.log('http://localhost:3000/stream/4.mp3');
+    console.log('Press Ctrl+C to stop');
+});
+
+```
+
+
+
 ### 任务2
 
 现在，我们将开始着手处理在学习Axios的时候写的前端页面所发送的表单。 对于那个前端页面，在登陆时，发送POST请求，后端将信息与数据库中的users对比，如果正确，返回：
