@@ -11,4 +11,6 @@ npm install mongoose
 ## week5
 ```bash
 npm install koa koa-send
+
+npm install koa-bodyparser koa-router koa-static koa-views pug
 ```

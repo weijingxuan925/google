@@ -21,8 +21,12 @@
     "glob": "^10.2.7",
     "jpeg-js": "^0.4.4",
     "koa": "^2.14.2",
+    "koa-bodyparser": "^4.4.0",
     "koa-jwt": "^4.0.4",
+    "koa-router": "^12.0.0",
     "koa-send": "^5.0.1",
+    "koa-static": "^5.0.0",
+    "koa-views": "^8.1.0",
     "md5": "^2.3.0",
     "meta-data": "^1.0.0",
     "mongoose": "^7.2.2",
@@ -30,7 +34,8 @@
     "node-id3": "^0.2.6",
     "os": "^0.1.2",
     "path": "^0.12.7",
-    "proper-lockfile": "^4.1.2"
+    "proper-lockfile": "^4.1.2",
+    "pug": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
