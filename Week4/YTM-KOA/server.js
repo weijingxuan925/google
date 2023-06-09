@@ -1,4 +1,6 @@
 const Koa = require('koa');
+const serve = require('koa-static');
+const path = require('path');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
 const app = new Koa();
@@ -19,6 +21,31 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema, 'users');
+
+// 静态文件中间件，用于提供静态文件服务
+app.use(serve(path.join(__dirname, 'public')));
+
+// 欢迎页面的路由处理函数
+app.use(async (ctx, next) => {
+    if (ctx.method === 'GET' && ctx.path === '/') {
+        ctx.type = 'html';
+        ctx.body = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Welcome to YTM App</title>
+            </head>
+            <body>
+                <h1>Welcome to the YTM App</h1>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            </body>
+            </html>
+        `;
+    } else {
+        await next();
+    }
+});
 
 // 登录路由处理函数
 app.use(async (ctx, next) => {
@@ -71,6 +98,7 @@ app.use(async (ctx, next) => {
 });
 
 // 启动服务器
-app.listen(3001, () => {
-    console.log('Server is running on port 3000');
+const port = 3000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
