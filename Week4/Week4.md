@@ -636,7 +636,7 @@ MongoDB server version: 4.0.9
 
 此外你还可以使用 OSX 的 brew 来安装 mongodb：
 
-```
+```bash
 brew tap mongodb/brew
 brew install mongodb-community@4.4
 ```
@@ -657,6 +657,9 @@ brew 启动：
 
 ```bash
 brew services start mongodb-community@4.4
+
+// restart
+brew services restart mongodb-community@4.4
 ```
 
 brew 停止：

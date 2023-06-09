@@ -14,7 +14,7 @@ db.on('connected', () => {
     console.log('数据库连接成功');
 
     // 执行测试查询
-    testDatabaseConnection();
+    testDatabaseConnection().then(r => console.log('测试查询成功'));
 });
 
 // 监听连接错误事件
