@@ -20,19 +20,11 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema, 'users');
 
-// 处理根路径的请求
-app.use(async (ctx, next) => {
-    if (ctx.method === 'GET' && ctx.path === '/') {
-        ctx.body = 'Welcome to the homepage';
-    } else {
-        await next();
-    }
-});
-
 // 登录路由处理函数
 app.use(async (ctx, next) => {
     if (ctx.method === 'POST' && ctx.path === '/login') {
         const { username, password } = ctx.request.body;
+        console.log('Login Request - Username:', username, 'Password:', password);
 
         try {
             const user = await User.findOne({ username, password }).exec();
@@ -55,6 +47,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     if (ctx.method === 'POST' && ctx.path === '/register') {
         const { username, password } = ctx.request.body;
+        console.log('Register Request - Username:', username, 'Password:', password);
 
         try {
             const userExists = await User.exists({ username });
@@ -78,6 +71,6 @@ app.use(async (ctx, next) => {
 });
 
 // 启动服务器
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log('Server is running on port 3000');
 });
