@@ -7,9 +7,7 @@ app.use(bodyParser());
 
 // 模拟数据库中的用户信息
 const users = [
-    { username: 'admin', password: 'admin123' },
-    { username: 'user1', password: 'password1' },
-    { username: 'user2', password: 'password2' }
+    { username: 'admin', password: 'admin' },
 ];
 
 // 处理根路径的请求
