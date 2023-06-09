@@ -7,10 +7,14 @@ const app = new Koa();
 app.use(bodyParser());
 
 // 连接到 MongoDB 数据库
-mongoose.connect('mongodb://localhost/YTM', {
+mongoose.connect('mongodb://localhost:27017/YTM', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    connectTimeoutMS: 30000,  // 30秒连接超时时间
+    socketTimeoutMS: 60000,   // 60秒套接字超时时间
 });
+
+
 
 // 定义用户数据模型
 const userSchema = new mongoose.Schema({
@@ -82,10 +86,12 @@ app.use(async (ctx, next) => {
 
             if (user) {
                 ctx.body = { status: 0, msg: 'Success' };
-            } else {
+            }
+            else {
                 ctx.body = { status: 1, msg: 'Username or Password error.' };
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
             ctx.body = { status: 1, msg: 'Internal Server Error' };
         }
