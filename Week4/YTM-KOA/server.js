@@ -1,6 +1,4 @@
 const Koa = require('koa');
-const serve = require('koa-static');
-const path = require('path');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
 const app = new Koa();
@@ -22,10 +20,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema, 'users');
 
-// 静态文件中间件，用于提供静态文件服务
-app.use(serve(path.join(__dirname, 'public')));
-
-// 欢迎页面的路由处理函数
+// 处理根路径的请求
 app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/') {
         ctx.type = 'html';
@@ -39,6 +34,35 @@ app.use(async (ctx, next) => {
                 <h1>Welcome to the YTM App</h1>
                 <a href="/login">Login</a>
                 <a href="/register">Register</a>
+            </body>
+            </html>
+        `;
+    } else {
+        await next();
+    }
+});
+
+// 登录页面的路由处理函数
+app.use(async (ctx, next) => {
+    if (ctx.method === 'GET' && ctx.path === '/login') {
+        ctx.type = 'html';
+        ctx.body = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Login</title>
+            </head>
+            <body>
+                <h1>Login Page</h1>
+                <form action="/login" method="post">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <button type="submit">Login</button>
+                </form>
             </body>
             </html>
         `;
