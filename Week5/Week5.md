@@ -404,6 +404,8 @@ app.listen(3000, () => {
 
 ![image-20230609202908102](Week5.assets/image-20230609202908102.png)
 
+![image-20230609204218830](Week5.assets/image-20230609204218830.png)
+
 ### 任务3
 
 我们始终推荐，有现成的轮子就不要自己造。 所以，尝试集成koa-stream包以代替在任务1中写的逻辑完成串流。 https://github.com/claudetech/koa-stream 不要忘记在packages.json添加该依赖

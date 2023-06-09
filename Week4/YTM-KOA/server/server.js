@@ -1,7 +1,16 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
+const fs = require('fs');
 const app = new Koa();
+const path = require('path');
+const koaStatic = require('koa-static');
+
+// 设置静态文件目录
+const staticPath = path.join(__dirname, 'public'); // 替换为你的静态文件目录路径
+
+// 使用 koa-static 中间件
+app.use(koaStatic(staticPath));
 
 // 使用 bodyParser 解析请求体
 app.use(bodyParser());
@@ -10,8 +19,6 @@ app.use(bodyParser());
 mongoose.connect('mongodb://localhost:27017/YTM', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    connectTimeoutMS: 60000,  // 30秒连接超时时间
-    socketTimeoutMS: 120000,   // 60秒套接字超时时间
 });
 
 // 定义用户数据模型
@@ -26,19 +33,7 @@ const User = mongoose.model('User', userSchema, 'users');
 app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/') {
         ctx.type = 'html';
-        ctx.body = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Welcome to YTM App</title>
-      </head>
-      <body>
-        <h1>Welcome to the YTM App</h1>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      </body>
-      </html>
-    `;
+        ctx.body = fs.readFileSync('public/index.html', 'utf8');
     } else {
         await next();
     }
@@ -48,26 +43,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/login') {
         ctx.type = 'html';
-        ctx.body = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Login</title>
-      </head>
-      <body>
-        <h1>Login Page</h1>
-        <form action="/login" method="post">
-          <label for="username">Username:</label>
-          <input type="text" id="username" name="username" required>
-          <br>
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required>
-          <br>
-          <button type="submit">Login</button>
-        </form>
-      </body>
-      </html>
-    `;
+        ctx.body = fs.readFileSync('public/login.html', 'utf8');
     } else {
         await next();
     }
@@ -102,26 +78,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/register') {
         ctx.type = 'html';
-        ctx.body = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Register</title>
-      </head>
-      <body>
-        <h1>Register Page</h1>
-        <form action="/register" method="post">
-          <label for="username">Username:</label>
-          <input type="text" id="username" name="username" required>
-          <br>
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required>
-          <br>
-          <button type="submit">Register</button>
-        </form>
-      </body>
-      </html>
-    `;
+        ctx.body = fs.readFileSync('public/register.html', 'utf8');
     } else {
         await next();
     }
