@@ -390,9 +390,19 @@ app.listen(3000, () => {
 }
 ```
 
-![image-20230609173237883](Week5.assets/image-20230609173237883.png)	
+#### 本地运行
 
 ![image-20230609173226225](Week5.assets/image-20230609173226225.png)
+
+#### 数据库运行
+
+![image-20230609202630689](Week5.assets/image-20230609202630689.png)
+
+![image-20230609202741940](Week5.assets/image-20230609202741940.png)
+
+![image-20230609202759262](Week5.assets/image-20230609202759262.png)
+
+![image-20230609202908102](Week5.assets/image-20230609202908102.png)
 
 ### 任务3
 
