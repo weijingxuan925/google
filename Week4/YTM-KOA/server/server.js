@@ -10,11 +10,9 @@ app.use(bodyParser());
 mongoose.connect('mongodb://localhost:27017/YTM', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    connectTimeoutMS: 30000,  // 30秒连接超时时间
-    socketTimeoutMS: 60000,   // 60秒套接字超时时间
+    connectTimeoutMS: 60000,  // 30秒连接超时时间
+    socketTimeoutMS: 120000,   // 60秒套接字超时时间
 });
-
-
 
 // 定义用户数据模型
 const userSchema = new mongoose.Schema({
@@ -29,18 +27,18 @@ app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/') {
         ctx.type = 'html';
         ctx.body = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Welcome to YTM App</title>
-            </head>
-            <body>
-                <h1>Welcome to the YTM App</h1>
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
-            </body>
-            </html>
-        `;
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Welcome to YTM App</title>
+      </head>
+      <body>
+        <h1>Welcome to the YTM App</h1>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      </body>
+      </html>
+    `;
     } else {
         await next();
     }
@@ -51,25 +49,25 @@ app.use(async (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/login') {
         ctx.type = 'html';
         ctx.body = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Login</title>
-            </head>
-            <body>
-                <h1>Login Page</h1>
-                <form action="/login" method="post">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                    <br>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                    <br>
-                    <button type="submit">Login</button>
-                </form>
-            </body>
-            </html>
-        `;
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Login</title>
+      </head>
+      <body>
+        <h1>Login Page</h1>
+        <form action="/login" method="post">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+          <br>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+          <br>
+          <button type="submit">Login</button>
+        </form>
+      </body>
+      </html>
+    `;
     } else {
         await next();
     }
@@ -86,15 +84,44 @@ app.use(async (ctx, next) => {
 
             if (user) {
                 ctx.body = { status: 0, msg: 'Success' };
-            }
-            else {
+                console.log('Login Success');
+            } else {
                 ctx.body = { status: 1, msg: 'Username or Password error.' };
+                console.log('Login Failed');
             }
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
             ctx.body = { status: 1, msg: 'Internal Server Error' };
         }
+    } else {
+        await next();
+    }
+});
+
+// 注册页面的路由处理函数
+app.use(async (ctx, next) => {
+    if (ctx.method === 'GET' && ctx.path === '/register') {
+        ctx.type = 'html';
+        ctx.body = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Register</title>
+      </head>
+      <body>
+        <h1>Register Page</h1>
+        <form action="/register" method="post">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+          <br>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+          <br>
+          <button type="submit">Register</button>
+        </form>
+      </body>
+      </html>
+    `;
     } else {
         await next();
     }
@@ -111,12 +138,14 @@ app.use(async (ctx, next) => {
 
             if (userExists) {
                 ctx.body = { status: 1, msg: 'User Already Exist.' };
+                console.log('Register Failed: User Already Exist');
             } else {
                 // 创建新用户
                 const newUser = new User({ username, password });
                 await newUser.save();
 
                 ctx.body = { status: 0, msg: 'Success' };
+                console.log('Register Success');
             }
         } catch (error) {
             console.error(error);
