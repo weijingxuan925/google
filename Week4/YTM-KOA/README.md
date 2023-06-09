@@ -13,4 +13,10 @@ npm install mongoose
 npm install koa koa-send
 
 npm install koa-bodyparser koa-router koa-static koa-views pug
+
+npm install koa koa-router koa-stream
+
+npm install --save claudetech/koa-stream
+
+
 ```
