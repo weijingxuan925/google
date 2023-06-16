@@ -12,7 +12,6 @@ const db = mongoose.connection;
 // 监听连接成功事件
 db.on('connected', () => {
     console.log('数据库连接成功');
-
     // 执行测试查询
     testDatabaseConnection().then(r => console.log('测试查询成功'));
 });
@@ -26,7 +25,7 @@ db.on('error', (error) => {
 async function testDatabaseConnection() {
     try {
         // 执行一个空的查询操作
-        const result = await db.collection('users').findOne({});
+        const result = await db.collection('users').find({}).toArray();
         console.log('数据库查询结果:', result);
     } catch (error) {
         console.error('数据库查询错误:', error);

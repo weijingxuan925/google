@@ -20,6 +20,7 @@
 
 <script>
 export default {
+  name: "RegisterPage", // Modify the component name to use multiple words
   data() {
     return {
       username: "",
