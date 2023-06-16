@@ -15,12 +15,36 @@ const cpuCount = os.cpus().length;
 async function libraryInit() {
   // 获取音乐文件列表
   const files = glob.sync('**/*.mp3', { cwd: libraryPath });
-  const index = []
+  const index = [];
+  const playlists = [];
   // 初始化音乐照片文件夹
   const albumCovers = {};
+// 播放列表文件路径
+  const playlistsPath = path.join(libraryPath, 'playlists.json');
 
   // 创建音乐照片文件夹
   await fs.promises.mkdir(coverPath, { recursive: true });
+
+  // 创建播放列表文件
+  const createPlaylistsFile = async () => {
+    const playlistsData = []; // 初始播放列表为空数组
+    await fs.promises.writeFile(playlistsPath, JSON.stringify(playlistsData));
+    console.log(`Playlists file created: ${playlistsPath}`);
+  };
+
+// 检查播放列表文件是否存在，如果不存在则创建
+  const checkPlaylistsFile = async () => {
+    try {
+      await fs.promises.access(playlistsPath, fs.constants.F_OK);
+      console.log(`Playlists file already exists: ${playlistsPath}`);
+    } catch (error) {
+      console.log(`Playlists file not found, creating...`);
+      await createPlaylistsFile();
+    }
+  };
+
+// 调用检查播放列表文件的函数
+  await checkPlaylistsFile();
 
   // 处理单个文件
   const processFile = async (file, callback) => {
@@ -85,6 +109,14 @@ async function libraryInit() {
       // 将文件数据添加到索引数组，按照格式要求换行
       index.push(JSON.stringify(fileData, null, 2));
       console.log(`Index Created: ${trackId} ${file}`);
+      // 按照Album创建Playlist
+      const albumPlaylist = {
+        pid: Math.random().toString(36).substr(2, 9), // 生成随机的pid
+        name: album,
+        tracks: [fileData.track_id],
+      };
+      playlists.push(albumPlaylist);
+      console.log(`Playlist Created: ${albumPlaylist.pid} ${album}`);
     }
     catch (error) {
       console.error(`Error processing file: ${file}`);
@@ -102,7 +134,11 @@ async function libraryInit() {
   });
 
   // 将索引数据写入文件，按照格式要求识别整体json
-  await fs.promises.writeFile(indexPath, JSON.stringify(index));
+  await fs.promises.writeFile(indexPath, JSON.stringify(index, null, 2));
+  // 将Playlist数据写入文件，按照格式要求识别整体json
+  await fs.promises.writeFile(playlistsPath, JSON.stringify(playlists, null, 2));
+
+  console.log('Library Initialization Completed');
 }
 
 // 加载音乐库索引
