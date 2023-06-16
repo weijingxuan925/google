@@ -1,8 +1,12 @@
 <template>
-  <div>
-    <h1>Welcome to the Home Page</h1>
-    <p>This is the content of the home page.</p>
-  </div>
+  <v-container>
+    <v-card>
+      <v-card-title class="headline">Welcome to the Home Page</v-card-title>
+      <v-card-text>
+        <p>This is the content of the home page.</p>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -11,6 +15,6 @@ export default {
 };
 </script>
 
-<style>
-/* 可选：添加样式 */
+<style scoped>
+/* 可选：添加自定义样式 */
 </style>
