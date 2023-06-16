@@ -5,7 +5,8 @@
   "main": "library.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node File Process/library.js"
+    "start": "node File Process/library.js",
+    "serve": "vue-cli-service serve"
   },
   "keywords": [],
   "author": "",
@@ -38,10 +39,12 @@
     "proper-lockfile": "^4.1.2",
     "pug": "^3.0.2",
     "vue": "^3.3.4",
+    "vue-router": "^4.2.2",
     "vuetify": "^3.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
-    "@babel/preset-env": "^7.22.4"
+    "@babel/preset-env": "^7.22.4",
+    "@vue/cli-service": "^5.0.8"
   }
 }
