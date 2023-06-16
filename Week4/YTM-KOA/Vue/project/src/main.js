@@ -3,15 +3,18 @@ import App from "./App.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import Explore from "./components/Explore.vue";
 import Library from "./components/Library.vue";
-import Login from "./components/Login.vue"; // 确认文件路径和文件名正确
-import Register from "./components/Register.vue"; // 确认文件路径和文件名正确
-import Home from "./components/Home.vue"; // 导入Home组件
+import Login from "./components/Login.vue";
+import Register from "./components/Register.vue";
+import Home from "./components/Home.vue";
+import { createVuetify } from "vuetify";
+import "vuetify/dist/vuetify.min.css";
+
 const routes = [
-    { path: "/", component: Home }, // 添加根路径的路由
+    { path: "/", component: Home },
     { path: "/explore", component: Explore },
     { path: "/library", component: Library },
-    { path: "/login", component: Login }, // 添加登录路由
-    { path: "/register", component: Register } // 添加注册路由
+    { path: "/login", component: Login },
+    { path: "/register", component: Register }
 ];
 
 const router = createRouter({
@@ -19,6 +22,9 @@ const router = createRouter({
     routes
 });
 
+const vuetify = createVuetify();
+
 const app = createApp(App);
 app.use(router);
+app.use(vuetify);
 app.mount("#app");
