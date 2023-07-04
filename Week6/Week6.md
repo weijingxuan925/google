@@ -20,6 +20,8 @@ Library页面为用户私人的Library，展示了用户自己的歌曲收藏以
 
 ![image-20230616195719229](Week6.assets/image-20230616195719229.png)
 
+![image-20230616200110841](Week6.assets/image-20230616200110841.png)
+
 ## 任务2
 
 vuetify：https://vuetifyjs.com/zh-Hans/getting-started/installation/
