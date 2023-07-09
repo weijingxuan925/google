@@ -4,23 +4,23 @@ import vuetify from 'vite-plugin-vuetify'
 
 const path = require('path')
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
       autoImport: true,
     }),
   ],
-  define: { 'process.env': {} },
+  define: {
+    'process.env': {
+      VITE_API_KEY: JSON.stringify(process.env.VITE_API_KEY || ''),
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
-  },
-  /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
-  resolve: {
+    // 自动解析扩展名
     extensions: [
       '.js',
       '.json',
@@ -29,7 +29,6 @@ export default defineConfig({
       '.ts',
       '.tsx',
       '.vue',
-    ]
+    ],
   },
-  */
 })
