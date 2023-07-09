@@ -35,3 +35,15 @@ vuetify：https://vuetifyjs.com/zh-Hans/getting-started/installation/
 ## 任务3
 
 使用Vuetify构建一个用户登录 & 注册的界面。 在理解了Vue的 /login 登陆页面 /explore 曲库探索页面 /library 个人库页面 /playlist/<pid> 播放列表页面 /album/<pid> 专辑页面 具体的UI样式，直接参考Youtube Music 如果没有前端基础，这一部可以使用较长的学习和实践时间（一个星期）
+
+![image-20230709223632765](Week6.assets/image-20230709223632765.png)
+
+![image-20230709223640913](Week6.assets/image-20230709223640913.png)
+
+![image-20230709223714927](Week6.assets/image-20230709223714927.png)
+
+![image-20230709223737781](Week6.assets/image-20230709223737781.png)
+
+![image-20230709223800148](Week6.assets/image-20230709223800148.png)
+
+可以播放
