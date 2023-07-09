@@ -47,3 +47,5 @@ vuetify：https://vuetifyjs.com/zh-Hans/getting-started/installation/
 ![image-20230709223800148](Week6.assets/image-20230709223800148.png)
 
 可以播放
+
+![image-20230709225557632](Week6.assets/image-20230709225557632.png)

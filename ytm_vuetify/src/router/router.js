@@ -4,6 +4,7 @@ import library from '../views/Library/LibraryView.vue'
 import player from '../views/Audio/vuetify-audio.vue'
 import login from '../views/Login/login.vue'
 import HomePage from '../views/home/HomePage.vue';
+import InfoPage from "@/views/info/info.vue";
 
 
 const routes = [
@@ -16,6 +17,11 @@ const routes = [
     path: '/',
     name: '/',
     component: HomePage
+  },
+  {
+    path: '/info',
+    name: 'info',
+    component:InfoPage
   },
   {
     path: '/explore',

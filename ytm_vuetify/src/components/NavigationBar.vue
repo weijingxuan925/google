@@ -1,8 +1,8 @@
 <template>
   <v-app-bar color="bg-light-blue-darken-3">
     <v-container class="fill-height d-flex align-center">
-      <v-icon color="blue" icon="mdi-vuetify" size="large"></v-icon>
-      <v-toolbar-title>Player</v-toolbar-title>
+      <v-icon color="blue" icon="mdi-music" size="large"></v-icon>
+      <v-toolbar-title>YTM</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
