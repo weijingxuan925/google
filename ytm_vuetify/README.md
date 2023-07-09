@@ -1,8 +1,23 @@
-# music_app
+# YTM-Vuetify
 
 ## Project setup
 ```
 npm install
+```
+
+## Project setup for legacy-peer-deps
+```
+npm install -- legacy-peer-deps
+```
+
+### Compiles and hot-reloads for dev
+```
+npm run dev
+```
+
+### clean node cache
+```
+npm cache clean --force
 ```
 
 ### Compiles and hot-reloads for development
