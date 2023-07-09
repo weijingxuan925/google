@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-main class="bg-grey-darken-3">
+        <v-main class="bg-blue-lighten-4">
             <v-container>
               <v-row>
                 <v-col cols="2">
@@ -46,10 +46,7 @@
 
 <script>
 export default {
-
 }
 </script>
-
 <style>
-
 </style>

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import explore from '../views/ExploreView.vue'
-import library from '../views/LibraryView.vue'
-import player from '../views/vuetify-audio.vue'
-import login from '../views/UserLoginView.vue'
+import explore from '../views/Explore/ExploreView.vue'
+import library from '../views/Library/LibraryView.vue'
+import player from '../views/Audio/vuetify-audio.vue'
+import login from '../views/Login/UserLoginView.vue'
 
 
 const routes = [

@@ -1,3 +1,4 @@
+
 <template>
   <v-app id="inspire">
     <v-main class="bg-blue-lighten-5">
@@ -8,6 +9,7 @@
               class="mt-2"
               cols="12"
             >
+              <!-- TODO: 修改名称 -->
               <strong>类别 {{ n }}</strong>
             </v-col>
             <v-col
