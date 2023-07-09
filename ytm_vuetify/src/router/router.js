@@ -3,13 +3,19 @@ import explore from '../views/Explore/ExploreView.vue'
 import library from '../views/Library/LibraryView.vue'
 import player from '../views/Audio/vuetify-audio.vue'
 import login from '../views/Login/login.vue'
+import HomePage from '../views/home/HomePage.vue';
 
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
-    component: explore
+    component: HomePage
+  },
+  {
+    path: '/',
+    name: '/',
+    component: HomePage
   },
   {
     path: '/explore',

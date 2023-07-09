@@ -6,7 +6,10 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn variant="text" to="/">Home</v-btn>
+      <v-btn variant="text" to="/home">Home</v-btn>
+      <v-spacer></v-spacer>
+
+      <v-btn variant="text" to="/explore">Explore</v-btn>
       <v-spacer></v-spacer>
 
       <v-btn variant="text" to="/library">Library</v-btn>
