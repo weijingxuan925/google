@@ -1,6 +1,6 @@
 <template>
-    <v-main class="bg-grey-darken-3 h-100">
-        <v-sheet color="grey-lighten-2" width="300" class="mx-auto h-50 w-50">
+    <v-main class="bg-blue-lighten-5 h-100">
+        <v-sheet color="bg-blue-lighten-1" width="300" class="mx-auto h-50 w-50">
             <v-form fast-fail @submit.prevent>
             
             <v-card-title class="text-h6 text-md-h5 text-lg-h4">User Login</v-card-title>

@@ -10,7 +10,7 @@
       <vuetify-audio
           :file="audioFile"
           :autoPlay="true"
-          :color="'blue'" 
+          :color="'blue'"
           :downloadable="true"
       ></vuetify-audio>
     </router-view>
