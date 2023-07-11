@@ -7,6 +7,7 @@ const async = require('async');
 const { encode } = require('jpeg-js');
 
 const libraryPath = path.join(__dirname, '');
+
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
 const cpuCount = os.cpus().length;

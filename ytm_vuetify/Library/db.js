@@ -2,14 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const md5 = require('md5');
-const os = require('os');
 const mongoose = require('mongoose');
+const { encode } = require('jpeg-js');
+
 const libraryPath = path.join(__dirname, '');
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
 const playlistsPath = path.join(libraryPath, 'playlists.json');
 
-// 链接数据库
 const connectionString = 'mongodb://localhost:27017/YTM';
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -33,13 +33,27 @@ const playlistSchema = new mongoose.Schema({
     pid: String,
     name: String,
     tracks: [String],
+    playlistCover: String
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema);
 
+async function createCoverDirectory() {
+    try {
+        await fs.promises.mkdir(coverPath, { recursive: true });
+        console.log('Cover directory created');
+    } catch (error) {
+        console.error('Error creating cover directory');
+        console.error(error);
+    }
+}
+
 async function libraryInit() {
-    const files = glob.sync('**/*.mp3', { cwd: libraryPath});
-    const albumPlaylists = {};
+    const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+    const indexData = [];
+    const playlistsData = {};
+
+    await createCoverDirectory();
 
     await Promise.all(files.map(async (file) => {
         const filePath = path.join(libraryPath, file);
@@ -73,37 +87,34 @@ async function libraryInit() {
                 file: file,
             };
 
-            await Library.create(fileData);
+            indexData.push(JSON.stringify(fileData, null, 2));
 
             if (picture && picture.length > 0) {
                 const albumCoverPath = path.join(coverPath, `${fileData.album_id}.jpg`);
                 const imageData = picture[0].data;
-                const imageBuffer = Buffer.from(imageData);
-                await fs.promises.writeFile(albumCoverPath, imageBuffer);
+                await fs.promises.writeFile(albumCoverPath, imageData);
+
+                if (!playlistsData[fileData.album_id]) {
+                    const playlist = new Playlist({
+                        pid: Math.random().toString(36).substr(2, 9),
+                        name: fileData.album,
+                        tracks: [fileData.track_id], // 添加当前歌曲到 tracks 数组中
+                        playlistCover: albumCoverPath
+                    });
+                    await playlist.save();
+                    playlistsData[fileData.album_id] = playlist;
+                    console.log(`Playlist created: ${playlist.pid} ${playlist.name}`);
+                }
             }
 
-            if (!albumPlaylists[fileData.album_id]) {
-                const playlist = new Playlist({
-                    pid: Math.random().toString(36).substr(2, 9),
-                    name: fileData.album,
-                    tracks: [],
-                });
-                await playlist.save();
-                albumPlaylists[fileData.album_id] = playlist;
-                console.log(`Playlist created: ${playlist.pid} ${playlist.name}`);
-            }
-
-            const playlist = albumPlaylists[fileData.album_id];
-            playlist.tracks.push(fileData.track_id);
-            await playlist.save();
-            console.log(`Track added to playlist: ${playlist.pid} ${fileData.track_id}`);
         } catch (error) {
             console.error(`Error processing file: ${file}`);
             console.error(error);
         }
     }));
 
-    await fs.promises.writeFile(playlistsPath, JSON.stringify(Object.values(albumPlaylists), null, 2));
+    await fs.promises.writeFile(indexPath, `[${indexData.join(',\n')}]`);
+    await fs.promises.writeFile(playlistsPath, JSON.stringify(Object.values(playlistsData), null, 2));
     console.log('Library Initialization Completed');
 }
 
