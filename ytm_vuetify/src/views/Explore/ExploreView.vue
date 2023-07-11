@@ -6,9 +6,11 @@
           <v-col class="mt-2" cols="12">
             <strong>推荐 Albums</strong>
           </v-col>
-          <v-col v-for="j in 6" :key="j" cols="12" sm="6" md="4" lg="2">
-            <v-card @click="goToAlbum(albumId)">
-              <v-sheet height="150"></v-sheet>
+          <v-col v-for="album in recommendedAlbums" :key="album._id" cols="12" sm="6" md="4" lg="2" @click="goToAlbum(album._id)">
+            <v-card>
+              <v-sheet height="150">
+                <img :src="getAlbumCoverUrl(album.cover)" alt="Album Cover" class="album-cover" />
+              </v-sheet>
             </v-card>
           </v-col>
         </v-row>
@@ -16,11 +18,12 @@
           <v-col class="mt-2" cols="12">
             <strong>推荐 Playlists</strong>
           </v-col>
-          <v-col v-for="playlist in playlists" :key="playlist._id" cols="12" sm="6" md="4" lg="2">
-            <v-card @click="goToPlaylist(playlist._id)">
-              <v-sheet height="150">
-                {{ playlist.name }}
+          <v-col v-for="playlist in playlists" :key="playlist._id" cols="12" sm="6" md="4" lg="2" @click="goToPlaylist(playlist._id)">
+            <v-card>
+              <v-sheet >
+                <img :src="getPlaylistCoverUrl(playlist.playlistCover)" alt="Playlist Cover" class="playlist-cover" />
               </v-sheet>
+<!--              <div class="playlist-name">{{ playlist.name }}</div>-->
             </v-card>
           </v-col>
         </v-row>
@@ -36,13 +39,15 @@ export default {
   data() {
     return {
       drawer: null,
+      recommendedAlbums: [], // 存储从数据库中获取的推荐专辑数据
       playlists: [], // 存储从数据库中获取的播放列表数据
     };
   },
 
   mounted() {
-    // 在组件加载后从数据库中获取播放列表数据
-    this.getPlaylists();
+    // 在组件加载后从数据库中获取推荐专辑和播放列表数据
+    this.fetchRecommendedAlbums();
+    this.fetchPlaylists();
   },
 
   methods: {
@@ -56,33 +61,43 @@ export default {
       this.$router.push({ name: 'playlist', params: { playlistId } });
     },
 
-    getPlaylists() {
-      // 从数据库中获取播放列表数据的逻辑
-      // 使用适当的方法（例如axios）发送请求，并将响应数据存储在playlists数组中
-      // 示例：使用axios发送GET请求
-      axios
-          .get('http://localhost:3000/api/playlists')
-          .then(response => {
-            this.playlists = response.data;
-          })
-          .catch(error => {
-            console.error('Error retrieving playlists:', error);
-          });
+    async fetchRecommendedAlbums() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/album');
+        this.recommendedAlbums = response.data;
+      } catch (error) {
+        console.error('Error fetching recommended albums:', error);
+      }
     },
+
+    async fetchPlaylists() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/playlists');
+        this.playlists = response.data;
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    },
+
+    getAlbumCoverUrl(coverPath) {
+      const coverFileName = coverPath.split("/").pop();
+      return `http://localhost:3000/cover/${coverFileName}`;
+    },
+
+    getPlaylistCoverUrl(coverPath) {
+      const coverFileName = coverPath.split("/").pop();
+      return `http://localhost:3000/cover/${coverFileName}`;
+    }
+
   },
 };
 </script>
 
 <style>
-.v-sheet {
-  background-color: #ffffff;
-  border-radius: 4px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
-
-strong {
-  font-weight: bold;
-  font-size: 20px;
+.album-cover,
+.playlist-cover {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
 }
 </style>

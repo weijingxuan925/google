@@ -3,11 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path'); // 新添加的代码
+
 
 // 创建 Express 应用程序
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+// 新添加的代码：设置静态文件服务器
+const coverPath = path.join('/Users/jingxuanwei/Desktop/google/ytm_vuetify/Library', 'cover');
+app.use('/cover', express.static(coverPath));
+
 
 // 连接到 MongoDB 数据库
 mongoose.connect('mongodb://localhost/YTM', { useNewUrlParser: true, useUnifiedTopology: true })
