@@ -38,7 +38,7 @@ const playlistSchema = new mongoose.Schema({
 const Playlist = mongoose.model('Playlist', playlistSchema);
 
 async function libraryInit() {
-    const files = glob.sync('**/*.mp3', { cwd: libraryPath });
+    const files = glob.sync('**/*.mp3', { cwd: libraryPath});
     const albumPlaylists = {};
 
     await Promise.all(files.map(async (file) => {
