@@ -5,6 +5,7 @@ import player from '../views/Audio/vuetify-audio.vue'
 import login from '../views/Login/login.vue'
 import HomePage from '../views/home/HomePage.vue';
 import InfoPage from "@/views/info/info.vue";
+import albums from "@/views/Explore/Albums.vue";
 
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
     path: '/explore',
     name: 'explore',
     component: explore
+  },
+  {
+    path: '/album/:albumId',
+    name: 'album',
+    component: albums,
   },
   {
     path: '/library',

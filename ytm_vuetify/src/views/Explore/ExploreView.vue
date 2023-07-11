@@ -37,9 +37,10 @@ export default {
 
   methods: {
     goToAlbum(albumId) {
-      // Navigate to the album page with the given albumId
-      // You can use a router library or any other method to handle navigation
+      // 使用Vue Router导航到专辑页面
+      this.$router.push({ name: 'album', params: { albumId } });
     },
+
 
     goToPlaylist(playlistId) {
       // Navigate to the playlist page with the given playlistId

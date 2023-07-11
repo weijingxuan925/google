@@ -1,5 +1,5 @@
 <template>
-  <v-card style="text-align: center" :flat="flat == undefined || flat == false  ? false : true">
+  <v-card style="text-align: center" :flat="!(flat === undefined || flat === false)">
       <v-card-text>
           <v-btn outlined icon class="ma-2" :color="color" @click.enter="playing ? pause() : play()" :disabled="!loaded">
               <v-icon v-if="!playing || paused">{{ playIcon }}</v-icon>

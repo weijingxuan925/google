@@ -69,6 +69,16 @@ app.post('/api/login', (req, res) => {
         });
 });
 
+// 导入其他路由处理器
+// const albumRoutes = require('./routes/album');
+// const playlistRoutes = require('./routes/playlist');
+// const trackRoutes = require('./routes/track');
+
+// // 注册其他路由处理器
+// app.use('/album', albumRoutes);
+// app.use('/playlist', playlistRoutes);
+// app.use('/track', trackRoutes);
+
 // 启动服务器
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
