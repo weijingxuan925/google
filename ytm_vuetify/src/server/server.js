@@ -27,6 +27,14 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', UserSchema);
 
+// 定义播放列表模型
+const PlaylistSchema = new mongoose.Schema({
+    name: String,
+    tracks: [String]
+});
+
+const Playlist = mongoose.model('Playlist', PlaylistSchema);
+
 // 处理注册请求
 app.post('/api/register', (req, res) => {
     const { username, password, email } = req.body;
@@ -57,8 +65,7 @@ app.post('/api/login', (req, res) => {
                 console.log('Login successful');
                 res.status(200).json({ message: 'Login successful' });
                 return user.get('username');
-            }
-            else {
+            } else {
                 console.log('Invalid username or password');
                 res.status(401).json({ message: 'Invalid username or password' });
             }
@@ -68,6 +75,20 @@ app.post('/api/login', (req, res) => {
             res.status(500).json({ message: 'Login failed' });
         });
 });
+
+// 处理获取播放列表请求
+app.get('/api/playlists', (req, res) => {
+    Playlist.find()
+        .then(playlists => {
+            console.log('Playlists retrieved:', playlists);
+            res.status(200).json(playlists);
+        })
+        .catch(error => {
+            console.error('Error retrieving playlists:', error);
+            res.status(500).json({ message: 'Error retrieving playlists' });
+        });
+});
+
 
 // 导入其他路由处理器
 // const albumRoutes = require('./routes/album');
