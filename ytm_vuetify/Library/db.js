@@ -3,8 +3,6 @@ const path = require('path');
 const glob = require('glob');
 const md5 = require('md5');
 const mongoose = require('mongoose');
-const { encode } = require('jpeg-js');
-
 const libraryPath = path.join(__dirname, '');
 const coverPath = path.join(libraryPath, 'cover');
 const indexPath = path.join(libraryPath, 'index.json');
@@ -86,6 +84,10 @@ async function libraryInit() {
                 quality,
                 file: file,
             };
+
+            // 在获取 fileData 后创建和保存一个新的 Library 文档
+            const libraryEntry = new Library(fileData);
+            await libraryEntry.save(); // 使用 .save 方法将这个新的 libraryEntry 保存到数据库中
 
             indexData.push(JSON.stringify(fileData, null, 2));
 
