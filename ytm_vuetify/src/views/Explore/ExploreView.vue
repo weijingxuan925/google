@@ -23,7 +23,7 @@
               <v-sheet >
                 <img :src="getPlaylistCoverUrl(playlist.playlistCover)" alt="Playlist Cover" class="playlist-cover" />
               </v-sheet>
-<!--              <div class="playlist-name">{{ playlist.name }}</div>-->
+              <p class="playlist-name">{{ playlist.name }}</p>
             </v-card>
           </v-col>
         </v-row>
@@ -99,5 +99,10 @@ export default {
   max-width: 100%;
   max-height: 100%;
   object-fit: cover;
+}
+.playlist-name{
+  text-align: center;
+  font-size: 14px;
+  background-color: skyblue;
 }
 </style>
